@@ -4,13 +4,13 @@
 #include <time.h>
 #include "game_of_life.h"
 
-const int SCREEN_WIDTH = 1000;      //the demension of the window
-const int SCREEN_HEIGHT = 800;
+const int SCREEN_WIDTH = 800;      //the demension of the window
+const int SCREEN_HEIGHT = 600;
 const int GRID_WIDTH = MAX_COL - 2;          //the "grid" on the screen
 const int GRID_HEIGHT = MAX_ROW - 2;
-const int CELL_SIZE = 15;
+const int CELL_SIZE = 10;
 int themeNumber = 0;
-int frameRate = 5;
+int frameRate = 1;
 
 using namespace std;
 
@@ -124,6 +124,9 @@ void ProcessEvents(sf::RenderWindow &window){
 
             // key pressed
         case sf::Event::KeyPressed:
+            if(event.key.code == sf::Keyboard::Escape) {
+                window.close();
+            }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num0)) {
                 themeNumber = 0;
                 std::cout<<"color: random"<<std::endl;
@@ -150,7 +153,8 @@ void ProcessEvents(sf::RenderWindow &window){
                 std::cout<<"clearing"<<std::endl;
                 initialize_2d(processArray);
             }
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+//            if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+            if(event.key.code == sf::Keyboard::R) {
                 std::cout<<"randomizing"<<std::endl;
                 initial_random(processArray, 50);
             }
@@ -205,9 +209,9 @@ void FillShapes(sf::RectangleShape shapeArray[][GRID_WIDTH]){
             shapeArray[row][col].setSize(sf::Vector2f(CELL_SIZE,CELL_SIZE));
             shapeArray[row][col].setPosition(sf::Vector2f(vectorX,vectorY));
             colorGenerator(Red, Green, Blue, themeNumber);
-            if(processArray[row+1][col+1])
+            if(processArray[row+1][col+1]) //if ALIVE
                 shapeArray[row][col].setFillColor(sf::Color(Red, Green, Blue));
-            else
+            else                           //if DEAD
                 shapeArray[row][col].setFillColor(sf::Color(0,0,0));
         }
     }
@@ -254,6 +258,7 @@ void colorGenerator(int &Red, int &Green, int &Blue, int themeNumber) {
                 Red = 255;
             Blue = 255;
             break;
+            //bug: weird pink color (255, 0, 255)
         default:
             Red = 255;
             Green = 255;
