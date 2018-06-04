@@ -1,0 +1,27 @@
+# depslib dependency file v1.0
+1527912930 source:/home/qt/Codeblocks/01_very_first/main.cpp
+	<iostream>
+	<SFML/Graphics.hpp>
+	<SFML/Window.hpp>
+	<time.h>
+
+1527914185 source:/home/qt/Codeblocks/game_of_life_with_sfml/game_of_life.cpp
+	"game_of_life.h"
+	"constants.h"
+	<iostream>
+	<fstream>
+	<string>
+
+1527914191 /home/qt/Codeblocks/game_of_life_with_sfml/game_of_life.h
+	"constants.h"
+	<string>
+
+1527971674 /home/qt/Codeblocks/game_of_life_with_sfml/constants.h
+
+1527980420 source:/home/qt/Codeblocks/game_of_life_with_sfml/main.cpp
+	<iostream>
+	<SFML/Graphics.hpp>
+	<SFML/Window.hpp>
+	<time.h>
+	"game_of_life.h"
+
