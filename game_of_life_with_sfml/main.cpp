@@ -1,3 +1,10 @@
+/* TODO:
+ * 1. text buttons
+ * 2. save / load
+ * 3. drag to make cells alive
+ * 4. change color according how long cells have lived
+ */
+
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -10,18 +17,12 @@ const int GRID_WIDTH = MAX_COL - 2;          //the "grid" on the screen
 const int GRID_HEIGHT = MAX_ROW - 2;
 const int CELL_SIZE = 10;
 int themeNumber = 0;
-int frameRate = 1;
+int frameRate = 5;
+bool world[MAX_ROW][MAX_COL];
 
 using namespace std;
 
-void ShowGrid(sf::RectangleShape shapeArray[][GRID_WIDTH]);
-void FillShapes(sf::RectangleShape shapeArray[][GRID_WIDTH]);
-void ShowShapes(sf::RenderWindow &window,
-                sf::RectangleShape shapeArray[][GRID_WIDTH] );
 void ProcessEvents(sf::RenderWindow &window);
-bool processArray[MAX_ROW][MAX_COL];
-void colorGenerator(int &Red, int &Green, int &Blue, int themeNumber);
-int Random(int lo, int hi);
 
 
 int main(int argc, char *argv[])
@@ -70,11 +71,18 @@ int main(int argc, char *argv[])
 
     // GAME OF LIFE
     // initialize the array
-    initialize_2d(processArray);
-    initial_config(processArray);
+    initialize_2d(world);
+    initial_config(world);
 
     //DISPLAY THE GRID
-    ShowGrid(shapeArray);
+
+    //SHOW TEXT BUTTONS
+    sf::Font font;
+    if(!font.loadFromFile("../res/sunflower.ttf")) {
+        std::cout << "open font error" << std::endl;
+    }
+    sf::Text button1;
+//    DrawText(button1, font, "Button1", window);
 
 
     // run the program as long as the window is open
@@ -85,8 +93,12 @@ int main(int argc, char *argv[])
 
         //necessary: get read for the next frame:
         window.clear();
+        //GET RID OF WINDOW CLEAR.
+        //ONLY CLEAR THE RECTANGLE ARRAY
         //        window.draw(shape);
         //        window.draw(rectangle);
+
+        DrawText(button1, font, "Button1", window);
 
         //set up the next frame:
         FillShapes(shapeArray);
@@ -99,7 +111,7 @@ int main(int argc, char *argv[])
 
         //GAME OF LIFE
         //getting to the "next situation"
-        step(processArray);
+        step(world);
     }
     return 0;
 }
@@ -127,38 +139,56 @@ void ProcessEvents(sf::RenderWindow &window){
             if(event.key.code == sf::Keyboard::Escape) {
                 window.close();
             }
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num0)) {
+            //USE CTRL+NUM TO CHANGE COLOR SCHEME
+            //this is not handled in an elegant way right now.
+            //however the low framerates limits the usability
+            //of nested if brackets
+            if((sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)
+                    || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
+                    && sf::Keyboard::isKeyPressed(sf::Keyboard::Num0)) {
                 themeNumber = 0;
                 std::cout<<"color: random"<<std::endl;
             }
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) {
+            if((sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)
+                    || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
+                    && sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) {
                 themeNumber = 1;
                 std::cout<<"color: blue"<<std::endl;
             }
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) {
+            if((sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)
+                    || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
+                    && sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) {
                 themeNumber = 2;
                 std::cout<<"color: green"<<std::endl;
             }
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num3)) {
+            if((sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)
+                    || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
+                    && sf::Keyboard::isKeyPressed(sf::Keyboard::Num3)) {
                 themeNumber = 3;
                 std::cout<<"color: purple"<<std::endl;
             }
+
+            //ATTEMPTING TO INCREASE THE FRAMERATE
+            //DOESNT WORK.
             // if(sf::Keyboard::isKeyPressed(sf::Keyboard::Equal)
             //     || sf::Keyboard::isKeyPressed(sf::Keyboard::Add)) {
             //     frameRate += 2;
             //     std::cout<<"frameRate: "<<frameRate<<std::endl;
             // }
             //...
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
+
+            //CLEAR THE WORLD
+            if(event.key.code == sf::Keyboard::C) {
                 std::cout<<"clearing"<<std::endl;
-                initialize_2d(processArray);
+                initialize_2d(world);
             }
-//            if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+            //ADD 50 RANDOM LIVING CELLS TO THE WORLD
             if(event.key.code == sf::Keyboard::R) {
                 std::cout<<"randomizing"<<std::endl;
-                initial_random(processArray, 50);
+                initial_random(world, 50);
             }
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::X)) {
+            //EXIT WITH X
+            if(event.key.code == sf::Keyboard::X) {
                 std::cout<<"exit program"<<std::endl;
                 window.close();
             }
@@ -172,8 +202,6 @@ void ProcessEvents(sf::RenderWindow &window){
             }
             else{
                 std::cout<<"left button?"<<std::endl;
-                std::cout<<"randomizing"<<std::endl;
-                initial_random(processArray, 50);
             }
 
 
@@ -183,91 +211,4 @@ void ProcessEvents(sf::RenderWindow &window){
         }
     }
 
-}
-
-void ShowGrid(sf::RectangleShape shapeArray[][GRID_WIDTH]) {
-    for (int row=0; row<GRID_HEIGHT; row++){
-        for (int col=0; col<GRID_WIDTH; col++){
-            int vectorY=row*(CELL_SIZE+1);
-            int vectorX=col*(CELL_SIZE+1);
-            shapeArray[row][col].setSize(sf::Vector2f(CELL_SIZE,CELL_SIZE));
-            shapeArray[row][col].setPosition(sf::Vector2f(vectorX,vectorY));
-            shapeArray[row][col].setFillColor(sf::Color(0,0,0));
-            shapeArray[row][col].setOutlineThickness(1);
-            shapeArray[row][col].setOutlineColor(sf::Color(50,50,50));
-        }
-    }
-}
-
-
-void FillShapes(sf::RectangleShape shapeArray[][GRID_WIDTH]){
-    int Red = 0, Green = 0, Blue = 0;
-    for (int row=0; row<GRID_HEIGHT; row++){
-        for (int col=0; col<GRID_WIDTH; col++){
-            int vectorY=row*(CELL_SIZE+1);
-            int vectorX=col*(CELL_SIZE+1);
-            shapeArray[row][col].setSize(sf::Vector2f(CELL_SIZE,CELL_SIZE));
-            shapeArray[row][col].setPosition(sf::Vector2f(vectorX,vectorY));
-            colorGenerator(Red, Green, Blue, themeNumber);
-            if(processArray[row+1][col+1]) //if ALIVE
-                shapeArray[row][col].setFillColor(sf::Color(Red, Green, Blue));
-            else                           //if DEAD
-                shapeArray[row][col].setFillColor(sf::Color(0,0,0));
-        }
-    }
-
-}
-
-
-
-void ShowShapes(sf::RenderWindow& window,
-                sf::RectangleShape shapeArray[][GRID_WIDTH] ){
-    for (int row=0; row<GRID_HEIGHT; row++){
-        for (int col=0; col<GRID_WIDTH; col++){
-            window.draw(shapeArray[row][col]);
-        }
-    }
-
-}
-
-void colorGenerator(int &Red, int &Green, int &Blue, int themeNumber) {
-    switch(themeNumber) {
-        case 0: //purely random
-            Red = Random(0, 255);
-            Green = Random(0, 255);
-            Blue = Random(0, 255);
-            break;
-        case 1: //blue theme
-            Red = Random(0, 255);
-            Green = 0.68 * Red + 81;
-            if (Green > 255)
-                Green = 255;
-            Blue = 255;
-            break;
-        case 2: //green theme
-            Red = Random(0, 255);
-            Green = 255;
-            Blue = 0.75 * Red + 63;
-            if (Blue > 255)
-                Blue = 255;
-            break;
-        case 3: //purple theme
-            Green = Random(0, 255);
-            Red = 0.5 * Green + 127;
-            if (Red > 255)
-                Red = 255;
-            Blue = 255;
-            break;
-            //bug: weird pink color (255, 0, 255)
-        default:
-            Red = 255;
-            Green = 255;
-            Blue = 255;
-            break;
-    }
-}
-
-int Random(int lo, int hi){
-    int r = rand()%(hi+1)+lo+1;
-    return r;
 }
