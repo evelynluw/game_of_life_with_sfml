@@ -6,16 +6,11 @@
  */
 
 #include <iostream>
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
 #include <time.h>
 #include "game_of_life.h"
+#include "game_of_life_sfml.h"
+#include "constants.h"
 
-const int SCREEN_WIDTH = 800;      //the demension of the window
-const int SCREEN_HEIGHT = 600;
-const int GRID_WIDTH = MAX_COL - 2;          //the "grid" on the screen
-const int GRID_HEIGHT = MAX_ROW - 2;
-const int CELL_SIZE = 10;
 int themeNumber = 0;
 int frameRate = 5;
 bool world[MAX_ROW][MAX_COL];
@@ -81,7 +76,7 @@ int main(int argc, char *argv[])
     if(!font.loadFromFile("../res/sunflower.ttf")) {
         std::cout << "open font error" << std::endl;
     }
-    sf::Text button1;
+    sf::Text textButton;
 //    DrawText(button1, font, "Button1", window);
 
 
@@ -98,10 +93,14 @@ int main(int argc, char *argv[])
         //        window.draw(shape);
         //        window.draw(rectangle);
 
-        DrawText(button1, font, "Button1", window);
+        DrawText(textButton, font, "Load", 600, 30, window);
+        DrawText(textButton, font, "Save", 600, 90, window);
+        DrawText(textButton, font, "Random", 600, 150, window);
+        DrawText(textButton, font, "Clear", 600, 210, window);
+        DrawText(textButton, font, "Exit", 600, 270, window);
 
         //set up the next frame:
-        FillShapes(shapeArray);
+        FillShapes(shapeArray, themeNumber, world);
 
         //draw the shapes on the window object:
         ShowShapes(window, shapeArray);
@@ -196,12 +195,35 @@ void ProcessEvents(sf::RenderWindow &window){
         case sf::Event::MouseButtonReleased:
             if (event.mouseButton.button == sf::Mouse::Right)
             {
+                sf::Vector2f mousePosition;
+
                 std::cout << "the right button was pressed" << std::endl;
-                std::cout << "mouse x: " << event.mouseButton.x << std::endl;
-                std::cout << "mouse y: " << event.mouseButton.y << std::endl;
+                mousePosition.x = event.mouseButton.x;
+                mousePosition.y = event.mouseButton.y;
+                std::cout << "mouse x: " << mousePosition.x << std::endl;
+                std::cout << "mouse y: " << mousePosition.y << std::endl;
+
+
+
+
+
+
             }
             else{
                 std::cout<<"left button?"<<std::endl;
+                //Random button:
+//                the right button was pressed
+//                mouse x: 594
+//                mouse y: 150
+//                the right button was pressed
+//                mouse x: 693
+//                mouse y: 179
+                sf::Vector2f mousePosition = sf::Vector2(
+                            event.mouseButton.x, event.mouseButton.y);
+
+
+
+
             }
 
 

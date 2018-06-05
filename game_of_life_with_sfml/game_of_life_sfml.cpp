@@ -1,7 +1,10 @@
+#include <iostream>
 #include "game_of_life_sfml.h"
 
+//#include "constants_variables.h"
 
-void FillShapes(sf::RectangleShape shapeArray[][GRID_WIDTH]){
+void FillShapes(sf::RectangleShape shapeArray[][GRID_WIDTH],
+                int themeNumber, bool world[][MAX_COL]){
     int Red = 0, Green = 0, Blue = 0;
     for (int row=0; row<GRID_HEIGHT; row++){
         for (int col=0; col<GRID_WIDTH; col++){
@@ -48,17 +51,19 @@ void ClearShapes(sf::RectangleShape shapeArray[][GRID_WIDTH],
 }
 
 void DrawText(sf::Text &text, sf::Font font,
-              string textString, sf::RenderWindow &window) {
+              std::string textString, int pos_x, int pos_y,
+              sf::RenderWindow &window) {
     text.setFont(font);
     text.setString(textString);
     text.setCharacterSize(24);
     text.setFillColor(sf::Color::White);
     //try set the position (600, 30)
-    text.setPosition(600, 30);
+    text.setPosition(pos_x, pos_y);
     window.draw(text);
-    std::cout << textString << " is drawn at"
-              << text.getPosition().x << ','
-              << text.getPosition().y << std:: endl;
+
+//    std::cout << textString << " is drawn at"
+//              << text.getPosition().x << ','
+//              << text.getPosition().y << std:: endl;
 }
 
 void colorGenerator(int &Red, int &Green, int &Blue, int themeNumber) {

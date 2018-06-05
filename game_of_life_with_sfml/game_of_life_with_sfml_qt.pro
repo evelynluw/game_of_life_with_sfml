@@ -22,5 +22,5 @@ DEPENDPATH += "D:\SFML-2.5.0\include" #change this
 
 HEADERS += \
     game_of_life.h \
-    constants.h \
-    game_of_life_sfml.h
+    game_of_life_sfml.h \
+    constants.h
