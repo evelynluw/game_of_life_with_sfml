@@ -50,13 +50,40 @@ void ClearShapes(sf::RectangleShape shapeArray[][GRID_WIDTH],
     }
 }
 
-void DrawText(sf::Text &text, sf::Font font,
+void DrawNumberBox(sf::RenderWindow &window, int leftTop_x, int leftTop_y, sf::Font font) {
+    sf::RectangleShape rec;
+    rec.setSize(sf::Vector2f(40, 40));
+    rec.setFillColor(sf::Color::Black);
+//    rec.setFillColor(sf::Color::White);
+    rec.setOutlineThickness(2);
+    rec.setOutlineColor(sf::Color(100, 100, 100));
+    rec.setPosition(sf::Vector2f(550, 350));
+//    window.draw(rec);
+
+    sf::Text text;
+    int num = 0;
+    std::string numString = "0";
+
+    for(int row = 0; row < 3; row++) {
+        for(int col = 0; col < 3; col++) {
+            num++;
+            int vectorX= leftTop_x + col*(42);
+            int vectorY= leftTop_y + row*(42);
+            rec.setPosition(sf::Vector2f(vectorX, vectorY));
+            window.draw(rec);
+            numString = std::to_string(num);
+            DrawText(text, font, sf::Color::White, numString, vectorX + 12, vectorY+5, window);
+        }
+    }
+}
+
+void DrawText(sf::Text &text, sf::Font font, sf::Color color,
               std::string textString, int pos_x, int pos_y,
               sf::RenderWindow &window) {
     text.setFont(font);
     text.setString(textString);
     text.setCharacterSize(24);
-    text.setFillColor(sf::Color::White);
+    text.setFillColor(color);
     //try set the position (600, 30)
     text.setPosition(pos_x, pos_y);
     window.draw(text);
@@ -64,6 +91,15 @@ void DrawText(sf::Text &text, sf::Font font,
 //    std::cout << textString << " is drawn at"
 //              << text.getPosition().x << ','
 //              << text.getPosition().y << std:: endl;
+}
+
+bool ButtonDetect(int mouse_x, int mouse_y, int leftTop_x, int leftTop_y,
+                  int rightBottom_x, int rightBottom_y) {
+    if((mouse_x >= leftTop_x && mouse_y >= leftTop_y)
+        && (mouse_x <= rightBottom_x && mouse_y <= rightBottom_y))
+        return true;
+    else
+        return false;
 }
 
 void colorGenerator(int &Red, int &Green, int &Blue, int themeNumber) {

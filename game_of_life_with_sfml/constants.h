@@ -7,11 +7,11 @@
 
 const int MAX_ROW = 40 + 2;
 const int MAX_COL = 40 + 2;
-const int SCREEN_WIDTH = 800;      //the demension of the window
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 960;      //the demension of the window
+const int SCREEN_HEIGHT = 540;
 const int GRID_WIDTH = MAX_COL - 2;          //the "grid" on the screen
 const int GRID_HEIGHT = MAX_ROW - 2;
-const int CELL_SIZE = 10;
+const int CELL_SIZE = 12;
 
 
 #endif //GAME_OF_LIFE_CONSTANTS_H

@@ -14,6 +14,7 @@
 int themeNumber = 0;
 int frameRate = 5;
 bool world[MAX_ROW][MAX_COL];
+bool paused = false;
 
 using namespace std;
 
@@ -77,8 +78,8 @@ int main(int argc, char *argv[])
         std::cout << "open font error" << std::endl;
     }
     sf::Text textButton;
-//    DrawText(button1, font, "Button1", window);
 
+    sf::RectangleShape recShape;
 
     // run the program as long as the window is open
     while (window.isOpen())
@@ -93,11 +94,22 @@ int main(int argc, char *argv[])
         //        window.draw(shape);
         //        window.draw(rectangle);
 
-        DrawText(textButton, font, "Load", 600, 30, window);
-        DrawText(textButton, font, "Save", 600, 90, window);
-        DrawText(textButton, font, "Random", 600, 150, window);
-        DrawText(textButton, font, "Clear", 600, 210, window);
-        DrawText(textButton, font, "Exit", 600, 270, window);
+
+        //DRAW MAIN FUNCTION BUTTONS
+        DrawText(textButton, font, sf::Color::White, "Pause", 550, 30, window);
+        DrawText(textButton, font, sf::Color::White, "Resume", 550, 90, window);
+        DrawText(textButton, font, sf::Color::White, "Random", 550, 150, window);
+        DrawText(textButton, font, sf::Color::White, "Clear", 550, 210, window);
+        DrawText(textButton, font, sf::Color::White, "Exit", 550, 270, window);
+
+        //DRAW COLOR SELECTION BUTTONS
+        DrawText(textButton, font, sf::Color::White, "Colors:", 750, 30, window);
+        DrawText(textButton, font, sf::Color(15, 91, 255), "Blue", 750, 70, window);
+        DrawText(textButton, font, sf::Color(16, 237, 141), "Mint", 750, 110, window);
+        DrawText(textButton, font, sf::Color(154, 54, 255), "Purple", 750, 150, window);
+
+        //DRAW SAVE/LOAD NUMBER BOXES
+        DrawNumberBox(window, 550, 350, font);
 
         //set up the next frame:
         FillShapes(shapeArray, themeNumber, world);
@@ -106,11 +118,13 @@ int main(int argc, char *argv[])
         ShowShapes(window, shapeArray);
 
         //display the window and all its shapes:
-        window.display();;
+        window.display();
 
         //GAME OF LIFE
         //getting to the "next situation"
-        step(world);
+        if(!paused) {
+            step(world);
+        }
     }
     return 0;
 }
@@ -211,17 +225,61 @@ void ProcessEvents(sf::RenderWindow &window){
             }
             else{
                 std::cout<<"left button?"<<std::endl;
-                //Random button:
-//                the right button was pressed
-//                mouse x: 594
-//                mouse y: 150
-//                the right button was pressed
-//                mouse x: 693
-//                mouse y: 179
-                sf::Vector2f mousePosition = sf::Vector2(
-                            event.mouseButton.x, event.mouseButton.y);
 
+                int x = event.mouseButton.x;
+                int y = event.mouseButton.y;
 
+                //IF TEXT COLOR NEEDS TO BE CHANGED...
+                sf::Font font;
+                if(!font.loadFromFile("../res/sunflower.ttf")) {
+                    std::cout << "open font error" << std::endl;
+                }
+                sf::Text textButton;
+
+//                Pause: the right button was pressed
+//                mouse x: 595
+//                mouse y: 31
+//                the right button was pressed
+//                mouse x: 669
+//                mouse y: 60
+//                left button?
+//                Resume: the right button was pressed
+//                mouse x: 599
+//                mouse y: 93
+//                the right button was pressed
+//                mouse x: 691
+//                mouse y: 122
+
+                if(ButtonDetect(x, y, 544, 30, 620, 60)) {
+                    //PAUSE BUTTON DETECTION
+                    std::cout << "Paused" << std::endl;
+                    paused = true;
+                }
+
+                if(ButtonDetect(x, y, 544, 93, 640, 122)) {
+                    std::cout << "Resumed" << std::endl;
+                    paused = false;
+                }
+
+                if(ButtonDetect(x, y, 544, 150, 640, 179)) {
+                    //RANDOM BUTTON DETECTION
+                    std::cout << "Randomizing" << std::endl;
+                    initial_random(world, 50);
+//                    DrawText(textButton, font, sf::Color::Yellow, "Random", 550, 150, window);
+                }
+
+                if(ButtonDetect(x, y, 544, 210, 605, 237)) {
+                    //CLEAR BUTTON DETECTION
+                    std::cout << "clearing" << std::endl;
+                    initialize_2d(world);
+
+                }
+
+                if(ButtonDetect(x, y, 544, 268, 600, 300)) {
+                    //EXIT BUTTON DETECTION
+                    std::cout << "exiting" << std::endl;
+                    window.close();
+                }
 
 
             }
