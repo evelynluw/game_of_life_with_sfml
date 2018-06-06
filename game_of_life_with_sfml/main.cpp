@@ -81,6 +81,7 @@ int main(int argc, char *argv[])
 
     sf::RectangleShape recShape;
 
+
     // run the program as long as the window is open
     while (window.isOpen())
     {
@@ -97,10 +98,10 @@ int main(int argc, char *argv[])
 
         //DRAW MAIN FUNCTION BUTTONS
         DrawText(textButton, font, sf::Color::White, "Pause", 550, 30, window);
-        DrawText(textButton, font, sf::Color::White, "Resume", 550, 90, window);
-        DrawText(textButton, font, sf::Color::White, "Random", 550, 150, window);
-        DrawText(textButton, font, sf::Color::White, "Clear", 550, 210, window);
-        DrawText(textButton, font, sf::Color::White, "Exit", 550, 270, window);
+//        DrawText(textButton, font, sf::Color::White, "Resume", 550, 90, window);
+        DrawText(textButton, font, sf::Color::White, "Random", 550, 90, window);
+        DrawText(textButton, font, sf::Color::White, "Clear", 550, 150, window);
+        DrawText(textButton, font, sf::Color::White, "Exit", 550, 210, window);
 
         //DRAW COLOR SELECTION BUTTONS
         DrawText(textButton, font, sf::Color::White, "Colors:", 750, 30, window);
@@ -109,7 +110,10 @@ int main(int argc, char *argv[])
         DrawText(textButton, font, sf::Color(154, 54, 255), "Purple", 750, 150, window);
 
         //DRAW SAVE/LOAD NUMBER BOXES
+        DrawText(textButton, font, sf::Color::White, "Save:", 550, 300, window);
+        DrawText(textButton, font, sf::Color::White, "Load:", 750, 300, window);
         DrawNumberBox(window, 550, 350, font);
+        DrawNumberBox(window, 750, 350, font);
 
         //set up the next frame:
         FillShapes(shapeArray, themeNumber, world);
@@ -172,7 +176,7 @@ void ProcessEvents(sf::RenderWindow &window){
                     || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
                     && sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) {
                 themeNumber = 2;
-                std::cout<<"color: green"<<std::endl;
+                std::cout<<"color: mint"<<std::endl;
             }
             if((sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)
                     || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
@@ -180,7 +184,12 @@ void ProcessEvents(sf::RenderWindow &window){
                 themeNumber = 3;
                 std::cout<<"color: purple"<<std::endl;
             }
-
+            if((sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)
+                    || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
+                    && sf::Keyboard::isKeyPressed(sf::Keyboard::Num4)) {
+                themeNumber = 4;
+                std::cout<<"color: magenta"<<std::endl;
+            }
             //ATTEMPTING TO INCREASE THE FRAMERATE
             //DOESNT WORK.
             // if(sf::Keyboard::isKeyPressed(sf::Keyboard::Equal)
@@ -205,17 +214,56 @@ void ProcessEvents(sf::RenderWindow &window){
                 std::cout<<"exit program"<<std::endl;
                 window.close();
             }
+
+            if(event.key.code == sf::Keyboard::L) {
+                std::cout << "loading from ";
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)){
+                    std::cout << "1" << std::endl;
+                    std::string fileName = "\0";
+                    fileName = std::to_string(1);
+                    fileName += ".txt";
+                    read2dBoolArray(fileName, world);
+                }
+            }
+
+            if(event.key.code == sf::Keyboard::S) {
+                std::cout << "saving to ";
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)){
+                    std::cout << "1" << std::endl;
+                    std::string fileName = "\0";
+                    fileName = std::to_string(1);
+                    fileName += ".txt";
+                    write2dBoolArray(fileName, world);
+                }
+            }
+
+            break;
+        case sf::Event::MouseButtonPressed:
+            if (event.mouseButton.button == sf::Mouse::Left) {
+//                int x = event.mouseButton.x;
+//                int y = event.mouseButton.y;
+//                if(ButtonDetect(x, y, 0, 0, 520, 520)) {
+//                    int i = y / (CELL_SIZE + 1) + 1;
+//                    int j = x / (CELL_SIZE + 1) + 1;
+//                    if(world[i][j])
+//                        world[i][j] = false;
+//                    else
+//                        world[i][j] = true;
+//                    fill_margin(world);
+//                }
+//                sf::Mouse::getPosition().x;
+            }
             break;
         case sf::Event::MouseButtonReleased:
             if (event.mouseButton.button == sf::Mouse::Right)
             {
-                sf::Vector2f mousePosition;
-
                 std::cout << "the right button was pressed" << std::endl;
-                mousePosition.x = event.mouseButton.x;
-                mousePosition.y = event.mouseButton.y;
-                std::cout << "mouse x: " << mousePosition.x << std::endl;
-                std::cout << "mouse y: " << mousePosition.y << std::endl;
+                std::cout << "mouse x: " << event.mouseButton.x << ", "
+                          << event.mouseButton.x * 1.0 / window.getSize().x  << std::endl;
+                std::cout << "mouse y: " << event.mouseButton.y << ", "
+                          << event.mouseButton.y * 1.0 / window.getSize().y << std::endl;
+                std::cout << "window size:" << window.getSize().x << 'x'
+                          << window.getSize().y << std::endl;
 
 
 
@@ -252,33 +300,90 @@ void ProcessEvents(sf::RenderWindow &window){
 
                 if(ButtonDetect(x, y, 544, 30, 620, 60)) {
                     //PAUSE BUTTON DETECTION
-                    std::cout << "Paused" << std::endl;
-                    paused = true;
+                    if(!paused) {
+                        paused = true;
+                        std::cout << "Paused" << std::endl;
+                    } else {
+                        paused = false;
+                        std::cout << "Resumed" << std::endl;
+                    }
                 }
 
-                if(ButtonDetect(x, y, 544, 93, 640, 122)) {
-                    std::cout << "Resumed" << std::endl;
-                    paused = false;
-                }
+//                if(ButtonDetect(x, y, 544, 93, 640, 122)) {
+//                    std::cout << "Resumed" << std::endl;
+//                    paused = false;
+//                }
 
-                if(ButtonDetect(x, y, 544, 150, 640, 179)) {
+                if(ButtonDetect(x, y, 544, 90, 640, 120)) {
                     //RANDOM BUTTON DETECTION
                     std::cout << "Randomizing" << std::endl;
                     initial_random(world, 50);
 //                    DrawText(textButton, font, sf::Color::Yellow, "Random", 550, 150, window);
                 }
 
-                if(ButtonDetect(x, y, 544, 210, 605, 237)) {
+                if(ButtonDetect(x, y, 544, 150, 605, 180)) {
                     //CLEAR BUTTON DETECTION
                     std::cout << "clearing" << std::endl;
                     initialize_2d(world);
 
                 }
 
-                if(ButtonDetect(x, y, 544, 268, 600, 300)) {
+                if(ButtonDetect(x, y, 544, 210, 600, 240)) {
                     //EXIT BUTTON DETECTION
                     std::cout << "exiting" << std::endl;
                     window.close();
+                }
+
+                //FOR SAVE TO SLOTS:
+                int num = 0;
+                for(int row = 0; row < 3; row++) {
+                    for(int col = 0; col < 3; col++) {
+                        num++;
+                        int vectorX= 550 + col*(42);
+                        int vectorY= 350 + row*(42);
+                        if(ButtonDetect(x, y, vectorX, vectorY,
+                                        vectorX + 42, vectorY + 42)) {
+                            std::cout << "saving to " << num << std::endl;
+                            std::string fileName = "\0";
+                            fileName = std::to_string(num);
+                            fileName += ".txt";
+                            if(!write2dBoolArray(fileName, world))
+                                std::cout << "save failed" << std::endl;
+                        }
+                    }
+                }
+
+                //FOR LOAD FROM SLOTS:
+
+                num = 0;
+
+                for(int row = 0; row < 3; row++) {
+                    for(int col = 0; col < 3; col++) {
+                        num++;
+                        int vectorX= 750 + col*(42);
+                        int vectorY= 350 + row*(42);
+                        if(ButtonDetect(x, y, vectorX, vectorY,
+                                        vectorX + 42, vectorY + 42)) {
+                            std::cout << "loading from " << num << std::endl;
+                            std::string fileName = "\0";
+                            fileName = std::to_string(num);
+                            fileName += ".txt";
+                            if(!read2dBoolArray(fileName, world))
+                                std::cout << "load failed" << std::endl;
+                        }
+                    }
+                }
+
+                //FOR DRAWING ON THE GRID:
+
+                if(ButtonDetect(x, y, 0, 0, 520, 520)) {
+                    int i = y / (CELL_SIZE + 1) + 1;
+                    int j = x / (CELL_SIZE + 1) + 1;
+                    if(world[i][j])
+                        world[i][j] = false;
+                    else
+                        world[i][j] = true;
+                    fill_margin(world);
                 }
 
 

@@ -104,39 +104,46 @@ bool ButtonDetect(int mouse_x, int mouse_y, int leftTop_x, int leftTop_y,
 
 void colorGenerator(int &Red, int &Green, int &Blue, int themeNumber) {
     switch(themeNumber) {
-        case 0: //purely random
-            Red = Random(0, 255);
-            Green = Random(0, 255);
-            Blue = Random(0, 255);
-            break;
-        case 1: //blue theme
-            Red = Random(0, 255);
-            Green = 0.68 * Red + 81;
-            if (Green > 255)
-                Green = 255;
-            Blue = 255;
-            break;
-        case 2: //green theme
-            Red = Random(0, 255);
+    case 0: //purely random
+        Red = Random(0, 255);
+        Green = Random(0, 255);
+        Blue = Random(0, 255);
+        break;
+    case 1: //blue theme
+        Red = Random(0, 255);
+        Green = 0.68 * Red + 81;
+        if (Green > 255)
             Green = 255;
-            Blue = 0.75 * Red + 63;
-            if (Blue > 255)
-                Blue = 255;
-            break;
-        case 3: //purple theme
-            Green = Random(0, 255);
-            Red = 0.5 * Green + 127;
-            if (Red > 255)
-                Red = 255;
+        Blue = 255;
+        break;
+    case 2: //mint theme
+        Red = Random(0, 255);
+        Green = 255;
+        Blue = 0.49 * Red + 131;
+        if (Blue > 255)
             Blue = 255;
-            break;
-            //--bug: weird pink color (255, 0, 255)--
-            //resolved by correcting Random function
-        default:
+        break;
+    case 3: //purple theme
+        Green = Random(0, 255);
+        Red = 0.5 * Green + 127;
+        if (Red > 255)
             Red = 255;
-            Green = 255;
+        Blue = 255;
+        break;
+        //--bug: weird pink color (255, 0, 255)--
+        //resolved by correcting Random function
+    case 4: //magenta theme
+        Green = Random(0, 255);
+        Blue = 0.72 * Green + 72;
+        if (Blue > 255)
             Blue = 255;
-            break;
+        Red = 255;
+        break;
+    default:
+        Red = 255;
+        Green = 255;
+        Blue = 255;
+        break;
     }
 }
 
