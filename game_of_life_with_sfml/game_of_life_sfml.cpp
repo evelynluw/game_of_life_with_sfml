@@ -3,6 +3,53 @@
 
 //#include "constants_variables.h"
 
+//bool SelectMode(sf::RenderWindow &window, int &LT_i, int &LT_j,
+//                int &RB_i, int &RB_j) {
+////    int LT_x = 0;       //LeftTop
+////    int LT_y = 0;
+////    int RB_x = 0;       //RightBottom
+////    int RB_y = 0;
+//    sf::Event event;
+//    int selectStep = 0;
+//    sf::CircleShape circle;
+//    circle.setFillColor(sf::Color::Yellow);
+//    circle.setRadius(5);
+//    while(window.waitEvent(event)) {
+//        switch(selectStep) {
+//        case 0:
+//            //step 1: user presses down the button to start selecting.
+//            if(event.type == sf::Event::MouseButtonPressed) {
+////                LT_x = event.mouseButton.x;
+////                LT_y = event.mouseButton.y;
+//                pixelToCell(event.mouseButton.x, event.mouseButton.y,
+//                            LT_i, LT_j);
+//                std::cout << "LT select point registered" << std::endl;
+//                std::cout<<event.mouseButton.x<<", "<<event.mouseButton.y<<std::endl;
+//                circle.setPosition(event.mouseButton.x, event.mouseButton.y);
+//                window.draw(circle);
+//                std::cout<<"circle 1 drawn"<<std::endl;
+//                selectStep = 1;
+//            }
+//            break;
+//        case 1:
+//            if(event.type == sf::Event::MouseButtonReleased) {
+////                RB_x = event.mouseButton.x;
+////                RB_y = event.mouseButton.y;
+//                pixelToCell(event.mouseButton.x, event.mouseButton.y,
+//                            RB_i, RB_j);
+//                std::cout << "RB select point registered" << std::endl;
+//                selectStep = 2;
+//            }
+//            break;
+//        case 2:
+//            return true;
+//            break;
+//        default:
+//            break;
+//        }
+//    }
+//}
+
 void FillShapes(sf::RectangleShape shapeArray[][GRID_WIDTH],
                 int themeNumber, bool world[][MAX_COL]){
     int Red = 0, Green = 0, Blue = 0;
@@ -95,11 +142,8 @@ void DrawText(sf::Text &text, sf::Font font, sf::Color color,
 
 bool ButtonDetect(int mouse_x, int mouse_y, int leftTop_x, int leftTop_y,
                   int rightBottom_x, int rightBottom_y) {
-    if((mouse_x >= leftTop_x && mouse_y >= leftTop_y)
-        && (mouse_x <= rightBottom_x && mouse_y <= rightBottom_y))
-        return true;
-    else
-        return false;
+    return ((mouse_x >= leftTop_x && mouse_y >= leftTop_y)
+        && (mouse_x <= rightBottom_x && mouse_y <= rightBottom_y));
 }
 
 void colorGenerator(int &Red, int &Green, int &Blue, int themeNumber) {
@@ -145,6 +189,11 @@ void colorGenerator(int &Red, int &Green, int &Blue, int themeNumber) {
         Blue = 255;
         break;
     }
+}
+
+void pixelToCell(int pixel_x, int pixel_y, int &i, int &j) {
+    i = pixel_y / (CELL_SIZE + 1) + 1;
+    j = pixel_x / (CELL_SIZE + 1) + 1;
 }
 
 int Random(int lo, int hi){

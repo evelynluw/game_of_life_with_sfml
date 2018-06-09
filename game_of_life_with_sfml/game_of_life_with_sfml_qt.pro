@@ -5,7 +5,9 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     game_of_life.cpp \
-    game_of_life_sfml.cpp
+    game_of_life_sfml.cpp \
+    sidebar.cpp \
+    animate.cpp
 
 #LIBS += -L"..\..\SFML-2.0\lib" #change this
 #LIBS += -L"..\..\SFML-2.0\bin" #change this
@@ -23,4 +25,6 @@ DEPENDPATH += "D:\SFML-2.5.0\include" #change this
 HEADERS += \
     game_of_life.h \
     game_of_life_sfml.h \
-    constants.h
+    constants.h \
+    sidebar.h \
+    animate.h
