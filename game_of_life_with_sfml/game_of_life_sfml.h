@@ -5,7 +5,10 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
-bool SelectMode(sf::RenderWindow &window, int &LT_i, int &LT_j, int &RB_i, int &RB_j);
+void SaveSelection(sf::Vector2i LT, sf::Vector2i RB, bool tempArray[][MAX_COL], bool world[][MAX_COL]);
+void PasteSelection(sf::Vector2i LT, sf::Vector2i RB,
+                    int mouse_i, int mouse_j, bool tempArray[][MAX_COL], bool world[][MAX_COL]);
+
 void FillShapes(sf::RectangleShape shapeArray[][GRID_WIDTH],
                 int themeNumber, bool world[][MAX_COL]);
 void ShowShapes(sf::RenderWindow &window,

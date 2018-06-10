@@ -29,8 +29,12 @@ private:
     int frameRate = 5;
     bool world[MAX_ROW][MAX_COL];
     sf::RectangleShape shapeArray[GRID_HEIGHT][GRID_WIDTH];
-    bool paused = false;
-    bool selecting = false;
+//    bool paused = false;
+//    bool selecting = false;
+    sf::Vector2i select_LT;
+    sf::Vector2i select_RB;
+    STATE state = NORMAL;
+    bool tempArray[MAX_ROW][MAX_COL];
 };
 
 string mouse_pos_string(sf::RenderWindow& window);

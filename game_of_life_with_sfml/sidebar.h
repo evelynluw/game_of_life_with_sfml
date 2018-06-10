@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "constants.h"
 using namespace std;
 //all the components in the class
 //are copied from single ball..
@@ -19,9 +20,12 @@ public:
                   int pos_x, int pos_y, sf::RenderWindow &window);
     void drawNumberBox(sf::RenderWindow &window, int leftTop_x, int leftTop_y);
     void setMousePos(float mouse_x, float mouse_y);
+    void setButtonState(BUTTON_STATE buttonState);
     string& operator [](int index);
-    bool paused = false;
-    bool selecting = false;
+
+//    bool paused = false;
+//    bool selecting = false;
+//    STATE state = NORMAL;
 private:
     sf::RectangleShape rect;
     vector<string> items;
@@ -32,6 +36,7 @@ private:
     float _width;
     float _mouse_x;
     float _mouse_y;
+    BUTTON_STATE _buttonState;
 };
 
 #endif // SIDEBAR_H

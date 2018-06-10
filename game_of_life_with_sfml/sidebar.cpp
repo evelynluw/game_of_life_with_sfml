@@ -49,10 +49,10 @@ void sidebar::draw(sf::RenderWindow &window) {
     */
     //DRAW MAIN FUNCTION BUTTONS
 
-    if(!paused)
-        drawText(sf::Color::White, "Pause", 550, 30, window);
-    else
+    if(_buttonState == B_PAUSED)
         drawText(sf::Color::White, "Resume", 550, 30, window);
+    else
+        drawText(sf::Color::White, "Pause", 550, 30, window);
     drawText(sf::Color::White, "Random", 550, 90, window);
     drawText(sf::Color::White, "Clear", 550, 150, window);
     drawText(sf::Color::White, "Exit", 550, 210, window);
@@ -117,6 +117,10 @@ void sidebar::drawNumberBox(sf::RenderWindow &window, int leftTop_x, int leftTop
         }
     }
 
+}
+
+void sidebar::setButtonState(BUTTON_STATE buttonState) {
+    _buttonState = buttonState;
 }
 
 

@@ -28,3 +28,6 @@ HEADERS += \
     constants.h \
     sidebar.h \
     animate.h
+
+DISTFILES += \
+    notes.txt

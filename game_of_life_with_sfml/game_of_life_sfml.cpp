@@ -1,54 +1,30 @@
 #include <iostream>
 #include "game_of_life_sfml.h"
 
-//#include "constants_variables.h"
+void SaveSelection(sf::Vector2i LT, sf::Vector2i RB, bool tempArray[][MAX_COL], bool world[][MAX_COL]) {
+    int size_x = RB.x - LT.x + 1;
+    int size_y = RB.y - LT.y + 1;
+    for(int i = 0; i < size_x; i++) {
+        for(int j = 0; j < size_y; j++) {
+            tempArray[i][j] = world[LT.x + i][LT.y + j];
+            //DEBUG
+            std::cout<<tempArray[i][j]<<" ";
+        }
+        std::cout<<std::endl;
+    }
+}
 
-//bool SelectMode(sf::RenderWindow &window, int &LT_i, int &LT_j,
-//                int &RB_i, int &RB_j) {
-////    int LT_x = 0;       //LeftTop
-////    int LT_y = 0;
-////    int RB_x = 0;       //RightBottom
-////    int RB_y = 0;
-//    sf::Event event;
-//    int selectStep = 0;
-//    sf::CircleShape circle;
-//    circle.setFillColor(sf::Color::Yellow);
-//    circle.setRadius(5);
-//    while(window.waitEvent(event)) {
-//        switch(selectStep) {
-//        case 0:
-//            //step 1: user presses down the button to start selecting.
-//            if(event.type == sf::Event::MouseButtonPressed) {
-////                LT_x = event.mouseButton.x;
-////                LT_y = event.mouseButton.y;
-//                pixelToCell(event.mouseButton.x, event.mouseButton.y,
-//                            LT_i, LT_j);
-//                std::cout << "LT select point registered" << std::endl;
-//                std::cout<<event.mouseButton.x<<", "<<event.mouseButton.y<<std::endl;
-//                circle.setPosition(event.mouseButton.x, event.mouseButton.y);
-//                window.draw(circle);
-//                std::cout<<"circle 1 drawn"<<std::endl;
-//                selectStep = 1;
-//            }
-//            break;
-//        case 1:
-//            if(event.type == sf::Event::MouseButtonReleased) {
-////                RB_x = event.mouseButton.x;
-////                RB_y = event.mouseButton.y;
-//                pixelToCell(event.mouseButton.x, event.mouseButton.y,
-//                            RB_i, RB_j);
-//                std::cout << "RB select point registered" << std::endl;
-//                selectStep = 2;
-//            }
-//            break;
-//        case 2:
-//            return true;
-//            break;
-//        default:
-//            break;
-//        }
-//    }
-//}
+void PasteSelection(sf::Vector2i LT, sf::Vector2i RB,
+                    int mouse_i, int mouse_j, bool tempArray[][MAX_COL], bool world[][MAX_COL]) {
+    int size_x = RB.x - LT.x + 1;
+    int size_y = RB.y - LT.y + 1;
+    for(int i = 0; i < size_x; i++) {
+        for(int j = 0; j < size_y; j++) {
+            world[mouse_i + i][mouse_j + j] = tempArray[i][j];
+            //DEBUG
+        }
+    }
+}
 
 void FillShapes(sf::RectangleShape shapeArray[][GRID_WIDTH],
                 int themeNumber, bool world[][MAX_COL]){
