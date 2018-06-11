@@ -2,11 +2,19 @@
 #include "game_of_life_sfml.h"
 
 void SaveSelection(sf::Vector2i LT, sf::Vector2i RB, bool tempArray[][MAX_COL], bool world[][MAX_COL]) {
-    int size_x = RB.x - LT.x + 1;
-    int size_y = RB.y - LT.y + 1;
-    for(int i = 0; i < size_x; i++) {
-        for(int j = 0; j < size_y; j++) {
-            tempArray[i][j] = world[LT.x + i][LT.y + j];
+    int LT_i = 0,
+            LT_j = 0,
+            RB_i = 0,
+            RB_j = 0;
+    pixelToCell(LT.x, LT.y, LT_i, LT_j);
+    pixelToCell(RB.x, RB.y, RB_i, RB_j);
+    swapInt(LT_i, RB_i, (LT_i > RB_i));
+    swapInt(LT_j, RB_j, (LT_j > RB_j));
+    int size_i = RB_i - LT_i + 1;
+    int size_j = RB_j - LT_j + 1;
+    for(int i = 0; i < size_i; i++) {
+        for(int j = 0; j < size_j; j++) {
+            tempArray[i][j] = world[LT_i + i][LT_j + j];
             //DEBUG
             std::cout<<tempArray[i][j]<<" ";
         }
@@ -16,10 +24,18 @@ void SaveSelection(sf::Vector2i LT, sf::Vector2i RB, bool tempArray[][MAX_COL], 
 
 void PasteSelection(sf::Vector2i LT, sf::Vector2i RB,
                     int mouse_i, int mouse_j, bool tempArray[][MAX_COL], bool world[][MAX_COL]) {
-    int size_x = RB.x - LT.x + 1;
-    int size_y = RB.y - LT.y + 1;
-    for(int i = 0; i < size_x; i++) {
-        for(int j = 0; j < size_y; j++) {
+    int LT_i = 0,
+            LT_j = 0,
+            RB_i = 0,
+            RB_j = 0;
+    pixelToCell(LT.x, LT.y, LT_i, LT_j);
+    pixelToCell(RB.x, RB.y, RB_i, RB_j);
+    swapInt(LT_i, RB_i, (LT_i > RB_i));
+    swapInt(LT_j, RB_j, (LT_j > RB_j));
+    int size_i = RB_i - LT_i + 1;
+    int size_j = RB_j - LT_j + 1;
+    for(int i = 0; i < size_i; i++) {
+        for(int j = 0; j < size_j; j++) {
             world[mouse_i + i][mouse_j + j] = tempArray[i][j];
             //DEBUG
         }
@@ -73,32 +89,32 @@ void ClearShapes(sf::RectangleShape shapeArray[][GRID_WIDTH],
     }
 }
 
-void DrawNumberBox(sf::RenderWindow &window, int leftTop_x, int leftTop_y, sf::Font font) {
-    sf::RectangleShape rec;
-    rec.setSize(sf::Vector2f(40, 40));
-    rec.setFillColor(sf::Color::Black);
-//    rec.setFillColor(sf::Color::White);
-    rec.setOutlineThickness(2);
-    rec.setOutlineColor(sf::Color(100, 100, 100));
-    rec.setPosition(sf::Vector2f(550, 350));
-//    window.draw(rec);
+//void DrawNumberBox(sf::RenderWindow &window, int leftTop_x, int leftTop_y, sf::Font font) {
+//    sf::RectangleShape rec;
+//    rec.setSize(sf::Vector2f(40, 40));
+//    rec.setFillColor(sf::Color::Black);
+////    rec.setFillColor(sf::Color::White);
+//    rec.setOutlineThickness(2);
+//    rec.setOutlineColor(sf::Color(100, 100, 100));
+////    rec.setPosition(sf::Vector2f(550, 350));
+////    window.draw(rec);
 
-    sf::Text text;
-    int num = 0;
-    std::string numString = "0";
+//    sf::Text text;
+//    int num = 0;
+//    std::string numString = "0";
 
-    for(int row = 0; row < 3; row++) {
-        for(int col = 0; col < 3; col++) {
-            num++;
-            int vectorX= leftTop_x + col*(42);
-            int vectorY= leftTop_y + row*(42);
-            rec.setPosition(sf::Vector2f(vectorX, vectorY));
-            window.draw(rec);
-            numString = std::to_string(num);
-            DrawText(text, font, sf::Color::White, numString, vectorX + 12, vectorY+5, window);
-        }
-    }
-}
+//    for(int row = 0; row < 3; row++) {
+//        for(int col = 0; col < 3; col++) {
+//            num++;
+//            int vectorX= leftTop_x + col*(42);
+//            int vectorY= leftTop_y + row*(42);
+//            rec.setPosition(sf::Vector2f(vectorX, vectorY));
+//            window.draw(rec);
+//            numString = std::to_string(num);
+//            DrawText(text, font, sf::Color::White, numString, vectorX + 30, vectorY+5, window);
+//        }
+//    }
+//}
 
 void DrawText(sf::Text &text, sf::Font font, sf::Color color,
               std::string textString, int pos_x, int pos_y,
@@ -114,6 +130,17 @@ void DrawText(sf::Text &text, sf::Font font, sf::Color color,
 //    std::cout << textString << " is drawn at"
 //              << text.getPosition().x << ','
 //              << text.getPosition().y << std:: endl;
+}
+
+void DrawSelection(sf::RenderWindow &window, sf::Vector2i LT, sf::Vector2i mouseLoc) {
+    sf::RectangleShape rec;
+//    vector2f size(RB.x - LT.x, RB.y - LT.y);
+//    int width = RB.x - LT.x;
+//    int height = RB.y - LT.y;
+    rec.setSize(sf::Vector2f(mouseLoc.x - LT.x, mouseLoc.y - LT.y));
+    rec.setFillColor(sf::Color(255, 199, 0, 70));  //50 = alpha = transparency
+    rec.setPosition(LT.x, LT.y);
+    window.draw(rec);
 }
 
 bool ButtonDetect(int mouse_x, int mouse_y, int leftTop_x, int leftTop_y,
@@ -159,6 +186,31 @@ void colorGenerator(int &Red, int &Green, int &Blue, int themeNumber) {
             Blue = 255;
         Red = 255;
         break;
+    case 5: //pride theme
+    {
+        int code = Random(0, 5);
+        switch (code) {
+        case 0:
+            Red = 231; Green = 0; Blue = 0;
+            break;
+        case 1:
+            Red = 255; Green = 140; Blue = 0;
+            break;
+        case 2:
+            Red = 255; Green = 239; Blue = 0;
+            break;
+        case 3:
+            Red = 0; Green = 129; Blue = 31;
+            break;
+        case 4:
+            Red = 0; Green = 68; Blue = 255;
+            break;
+        case 5:
+            Red = 118; Green = 0; Blue = 137;
+            break;
+        }
+        break;
+    }
     default:
         Red = 255;
         Green = 255;
@@ -178,4 +230,13 @@ int Random(int lo, int hi){
     //== rand() % 256
     //returns int value in [0, 255]
     return r;
+}
+
+void swapInt(int &a, int &b, bool condition) {
+//    swap the value of a and b if condition is true
+    if (condition) {
+        int c = a;
+        a = b;
+        b = c;
+    }
 }

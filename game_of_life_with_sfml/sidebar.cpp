@@ -8,7 +8,7 @@ sidebar::sidebar() {
 
     //LOAD FONT
 //    std::cout<<"sidebar CTOR: loading font"<<std::endl;
-    if(!font.loadFromFile("../res/sunflower.ttf")) {
+    if(!font.loadFromFile("../res/Bangers.ttf")) {
         std::cout<<"sidebar CTOR: can't load font"<<std::endl;
         cin.get();  //why tho?
         exit(-1);
@@ -56,7 +56,10 @@ void sidebar::draw(sf::RenderWindow &window) {
     drawText(sf::Color::White, "Random", 550, 90, window);
     drawText(sf::Color::White, "Clear", 550, 150, window);
     drawText(sf::Color::White, "Exit", 550, 210, window);
-    drawText(sf::Color::White, "Select", 550, 270, window);
+    if(_buttonState == B_SELECTING)
+        drawText(sf::Color::White, "Exit Select", 550, 270, window);
+    else
+        drawText(sf::Color::White, "Select", 550, 270, window);
 
     //DRAW COLOR SELECTION BUTTONS
     drawText(sf::Color::White, "Colors:", 750, 30, window);
@@ -113,7 +116,7 @@ void sidebar::drawNumberBox(sf::RenderWindow &window, int leftTop_x, int leftTop
             rect.setPosition(sf::Vector2f(vectorX, vectorY));
             window.draw(rect);
             numString = std::to_string(num);
-            drawText(sf::Color::White, numString, vectorX + 12, vectorY+5, window);
+            drawText(sf::Color::White, numString, vectorX + 13, vectorY+5, window);
         }
     }
 

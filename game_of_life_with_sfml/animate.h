@@ -23,7 +23,7 @@ private:
     int command;
     sf::Font font;
     sf::Text myTextLabel;
-    bool mouseIn;
+//    bool mouseIn;
     sidebar sideBar;
     int themeNumber = 0;
     int frameRate = 5;
@@ -35,6 +35,7 @@ private:
     sf::Vector2i select_RB;
     STATE state = NORMAL;
     bool tempArray[MAX_ROW][MAX_COL];
+//    sf::Vector2f mouseLoc;
 };
 
 string mouse_pos_string(sf::RenderWindow& window);

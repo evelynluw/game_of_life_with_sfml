@@ -89,6 +89,12 @@ void animate::processEvents() {
                 themeNumber = 4;
                 std::cout<<"color: magenta"<<std::endl;
             }
+            if((sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)
+                || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
+                    && sf::Keyboard::isKeyPressed(sf::Keyboard::Num5)) {
+                themeNumber = 5;
+                std::cout<<"color: pride"<<std::endl;
+            }
             //ATTEMPTING TO INCREASE THE FRAMERATE
             //DOESNT WORK.
             // if(sf::Keyboard::isKeyPressed(sf::Keyboard::Equal)
@@ -137,24 +143,45 @@ void animate::processEvents() {
             }
 
             if(event.key.code == sf::Keyboard::E) {
-//                std::cout << "selecting ... "<<std::endl;
-//                sidebar.state = sele
+                if(state != ERASING) {
+                    std::cout <<"erasing"<<std::endl;
+                    state = ERASING;
+                } else {
+                    std::cout <<"normal mode"<<std::endl;
+                    state = PAUSED;
+                }
             }
 
             break;
         }
         case sf::Event::MouseMoved:{
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left)
-                    && state == NORMAL) {
-                int x = sf::Mouse::getPosition().x - window.getPosition().x - 5;
-                int y = sf::Mouse::getPosition().y - window.getPosition().y - 30;
+                    && (state == NORMAL || state == PAUSED)) {
+                state = PAUSED;
+                sideBar.setButtonState(B_PAUSED);
+                int x = sf::Mouse::getPosition(window).x;
+                int y = sf::Mouse::getPosition(window).y;
                 if(ButtonDetect(x, y, 0, 0, 520, 520)) {
                     int i = y / (CELL_SIZE + 1) + 1;
                     int j = x / (CELL_SIZE + 1) + 1;
                     if(!world[i][j])
                         world[i][j] = true;
                     fill_margin(world);
-                    std::cout<<"tile is drawn"<<std::endl;
+                    std::cout<<"tile is drawn (MOVE)"<<std::endl;
+                }
+            }
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)
+                    && (state == ERASING)) {
+                sideBar.setButtonState(B_PAUSED);
+                int x = sf::Mouse::getPosition(window).x;
+                int y = sf::Mouse::getPosition(window).y;
+                if(ButtonDetect(x, y, 0, 0, 520, 520)) {
+                    int i = y / (CELL_SIZE + 1) + 1;
+                    int j = x / (CELL_SIZE + 1) + 1;
+                    if(world[i][j])
+                        world[i][j] = false;
+                    fill_margin(world);
+                    std::cout<<"tile is erased (MOVE)"<<std::endl;
                 }
             }
             break;
@@ -177,32 +204,49 @@ void animate::processEvents() {
 
                         switch (state) {
                         //2.1. get press down / left-top pos & i, j
-                        case SELECTING_MOUSE_NOT_PRESSED: {
+                        case SELECTING_MOUSE_NOT_PRESSED:
+                        {
                             std::cout<<"SELECTING_MOUSE_NOT_PRESSED"<<std::endl;
-                            pixelToCell(x, y, select_LT.x, select_LT.y);
+//                            pixelToCell(x, y, select_LT.x, select_LT.y);
+                            select_LT.x = x;
+                            select_LT.y = y;
                             std::cout << "LT select pos registered" << std::endl;
                             state = SELECTING_MOUSE_PRESSED;    //SET TO NEXT SELECT STATE
                             std::cout<<"LT: "<<x<<", "<<y<<"; "
                                     <<select_LT.x<<", "<<select_LT.y<<std::endl;
-                            //NOW IT SHOULD EXIT PROCESS EVENTS & DRAW A DOT AT LT
-                            //                            circle.setPosition(event.mouseButton.x, event.mouseButton.y);
-                            //                            window.draw(circle);
-                            //                            std::cout<<"circle 1 drawn"<<std::endl; set the draw flag true?
-                            //                            selectStep = 1;
+                            //NOW IT SHOULD EXIT PROCESS EVENTS & START DRAWING RECTANGLE
                             break;
                         }
-                        default: {
+                        case PAUSED:
+                        case NORMAL: {
                             //DRAWING MODE, NOT SELECTING
                             std::cout<<"MOUSE IN GRID, DRAWING MODE"<<std::endl;
+                            state = PAUSED;
+                            sideBar.setButtonState(B_PAUSED);
                             int i = 0;
                             int j = 0;
                             pixelToCell(x, y, i, j);
                             if(!world[i][j])
                                 world[i][j] = true;
                             fill_margin(world);
-                            std::cout<<"tile is drawn"<<std::endl;
+                            std::cout<<"tile is drawn (PRESS)"<<std::endl;
                             break;
                         }
+                        case ERASING: {
+                            //ERASING MODE
+                            std::cout<<"MOUSE IN GRID, DRAWING MODE"<<std::endl;
+                            sideBar.setButtonState(B_PAUSED);
+                            int i = 0;
+                            int j = 0;
+                            pixelToCell(x, y, i, j);
+                            if(world[i][j])
+                                world[i][j] = false;
+                            fill_margin(world);
+                            std::cout<<"tile is erased (PRESS)"<<std::endl;
+                            break;
+                        }
+                        default:
+                            break;
                         }
 
                 }
@@ -222,7 +266,7 @@ void animate::processEvents() {
 
             }
             else if (event.mouseButton.button == sf::Mouse::Left) {
-                std::cout<<"left button pressed"<<std::endl;
+                std::cout<<"left button released"<<std::endl;
 
                 int x = event.mouseButton.x;
                 int y = event.mouseButton.y;
@@ -231,7 +275,9 @@ void animate::processEvents() {
                     //  DETECTION IF MOUSE IS INSIDE THE GRID AREA
                     if(state == SELECTING_MOUSE_PRESSED) {
                         std::cout<<"SELECTING_MOUSE_PRESSED"<<std::endl;
-                        pixelToCell(x, y, select_RB.x, select_RB.y);
+//                        pixelToCell(x, y, select_RB.x, select_RB.y);
+                        select_RB.x = x;
+                        select_RB.y = y;
                         std::cout << "RB select point registered" << std::endl;
                         state = PASTING;    //CHANGE THE STATE to PASTING
                         std::cout<<"RB: "<<x<<", "<<y<<"; "
@@ -250,6 +296,7 @@ void animate::processEvents() {
                                        mouse_i, mouse_j, tempArray, world);
                         std::cout<<"SELECTION PASTED"<<std::endl;
                         state = PAUSED;
+                        sideBar.setButtonState(B_NORMAL);
                     }
                 }
 
@@ -290,13 +337,16 @@ void animate::processEvents() {
 
                     //1. set the flag to true/false
                     if (state == SELECTING_MOUSE_NOT_PRESSED
-                            || state == SELECTING_MOUSE_PRESSED){
+                            || state == SELECTING_MOUSE_PRESSED
+                            || state == PASTING){
                         //ALREADY IN SELECTING MODE. NOW QUIT S.M.
-                        state = NORMAL;
+                        state = PAUSED;
+                        sideBar.setButtonState(B_NORMAL);
                         std::cout << "exit selecting mode" << std::endl;
                     } else {
                         //NOT IN SELECTING MODE, THEN ENTER S.M.
                         state = SELECTING_MOUSE_NOT_PRESSED;
+                        sideBar.setButtonState(B_SELECTING);
                         std::cout << "enter selecting mode" << std::endl;
                     }
                     //2. get the mouse position & convert it to i, j...
@@ -377,6 +427,9 @@ void animate::render() {
     window.clear();
     FillShapes(shapeArray, themeNumber, world);
     ShowShapes(window, shapeArray);
+    if(state == SELECTING_MOUSE_PRESSED) {
+        DrawSelection(window, select_LT, sf::Mouse::getPosition(window));
+    }
     sideBar.draw(window);
     window.display();
 
