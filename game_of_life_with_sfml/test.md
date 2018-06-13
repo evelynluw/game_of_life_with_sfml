@@ -2,7 +2,7 @@ TEST & WORK REPORT.
 
 Demo video: https://youtu.be/8EpJUPJYZAM
 
-This is the test & reprot for the Game of Life program.
+This is the test & report for the Game of Life program.
 
 # Report for the basic functions:
 - Pause/resume: works properly, however sometimes the program will pause with operations that shouldn't have paused the program.
@@ -14,7 +14,7 @@ This is the test & reprot for the Game of Life program.
         - Select a cell on the display grid to "paste" the pattern to the grid, or
         - Select a slot to save the pattern.
 - Load pattern: works properly. This is for the user to load previously saved patterns from the local slots and paste them into the grid.
-    - User can paste continuiously as long as they are in the load pattern mode.
+    - User can paste continuously  as long as they are in the load pattern mode.
     - User can also select another slot and continue with pasting patterns to the display grid.
 - Color selections: works properly, however they could trigger a pause to the game when pressed.
     - A color series is created by randomizing the "independent variable" and generate the "dependent variables" according to some linear formula.

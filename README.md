@@ -8,7 +8,7 @@
         - Select a cell on the display grid to "paste" the pattern to the grid, or
         - Select a slot to save the pattern.
 - Load pattern: works properly. This is for the user to load previously saved patterns from the local slots and paste them into the grid.
-    - User can paste continuiously as long as they are in the load pattern mode.
+    - User can paste continuously  as long as they are in the load pattern mode.
     - User can also select another slot and continue with pasting patterns to the display grid.
 - Color selections: works properly, however they could trigger a pause to the game when pressed.
     - A color series is created by randomizing the "independent variable" and generate the "dependent variables" according to some linear formula.
