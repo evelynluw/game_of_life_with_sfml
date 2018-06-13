@@ -18,11 +18,13 @@ enum STATE {NORMAL, PAUSED,
                                         //but haven't started selecting
             SELECTING_MOUSE_PRESSED,    //when user is dragging to select region
             PASTING,                    //when user finished dragging, finding a place to paste
+            LOADING_PATTERN,
             ERASING,
            };
 enum BUTTON_STATE {B_NORMAL,
                    B_PAUSED,
                    B_SELECTING,
+                   B_LOADING_PATTERN,
 };
 
 #endif //GAME_OF_LIFE_CONSTANTS_H

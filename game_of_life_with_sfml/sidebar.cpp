@@ -53,23 +53,35 @@ void sidebar::draw(sf::RenderWindow &window) {
         drawText(sf::Color::White, "Resume", 550, 30, window);
     else
         drawText(sf::Color::White, "Pause", 550, 30, window);
-    drawText(sf::Color::White, "Random", 550, 90, window);
-    drawText(sf::Color::White, "Clear", 550, 150, window);
-    drawText(sf::Color::White, "Exit", 550, 210, window);
+    drawText(sf::Color::White, "Random", 550, 78, window);
+    drawText(sf::Color::White, "Clear", 550, 126, window);
+    drawText(sf::Color::White, "Exit", 550, 174, window);
     if(_buttonState == B_SELECTING)
-        drawText(sf::Color::White, "Exit Select", 550, 270, window);
+        drawText(sf::Color::White, "Exit Select", 550, 222, window);
     else
-        drawText(sf::Color::White, "Select", 550, 270, window);
+        drawText(sf::Color::White, "Select", 550, 222, window);
+    if(_buttonState == B_LOADING_PATTERN)
+        drawText(sf::Color::White, "Exit Load Pattern", 550, 270, window);
+    else
+        drawText(sf::Color::White, "Load Pattern", 550, 270, window);
 
     //DRAW COLOR SELECTION BUTTONS
     drawText(sf::Color::White, "Colors:", 750, 30, window);
     drawText(sf::Color(15, 91, 255), "Blue", 750, 70, window);
     drawText(sf::Color(16, 237, 141), "Mint", 750, 110, window);
     drawText(sf::Color(154, 54, 255), "Purple", 750, 150, window);
+    drawText(sf::Color(255, 20, 86), "Magenta", 750, 190, window);
+    drawText(sf::Color(255, 20, 86), "Pride", 750, 230, window);
 
     //DRAW SAVE/LOAD & NUMBER BOXES
-    drawText(sf::Color::White, "Save:", 550, 340, window);
-    drawText(sf::Color::White, "Load:", 750, 340, window);
+    if(_buttonState == B_SELECTING)
+        drawText(sf::Color::White, "Pattern Save:", 550, 340, window);
+    else
+        drawText(sf::Color::White, "Save:", 550, 340, window);
+    if(_buttonState == B_LOADING_PATTERN)
+        drawText(sf::Color::White, "Pattern Load:", 750, 340, window);
+    else
+        drawText(sf::Color::White, "Load:", 750, 340, window);
 
     drawNumberBox(window, 550, 390);
     drawNumberBox(window, 750, 390);
@@ -88,8 +100,15 @@ void sidebar::drawItem(sf::RenderWindow &window, bool entered) {
 }
 
 void sidebar::drawText(sf::Color color, string textString,
-                  int pos_x, int pos_y, sf::RenderWindow &window) {
+                  int pos_x, int pos_y, sf::RenderWindow &window, bool rainbow) {
     //DRAWS A SINGLE STRING TO A DESTINED POSITION ON THE RENDERWINDOW
+    if(rainbow) {
+        sf::Texture rainbowTexture;
+        if(!rainbowTexture.loadFromFile("../res/pride.png")) {
+            std::cout << "load texture failed" << std::endl;
+        }
+
+    }
     sb_text.setString(textString);
     sb_text.setFillColor(color);
     sb_text.setPosition(pos_x, pos_y);

@@ -8,7 +8,9 @@
 void SaveSelection(sf::Vector2i LT, sf::Vector2i RB, bool tempArray[][MAX_COL], bool world[][MAX_COL]);
 void PasteSelection(sf::Vector2i LT, sf::Vector2i RB,
                     int mouse_i, int mouse_j, bool tempArray[][MAX_COL], bool world[][MAX_COL]);
-
+bool SaveSelectionToFile(std::string fileName, sf::Vector2i LT, sf::Vector2i RB, bool world[][MAX_COL]);
+bool PasteSelectionFromFile(std::string fileName,
+                       int mouse_i, int mouse_j, bool world[][MAX_COL]);
 void FillShapes(sf::RectangleShape shapeArray[][GRID_WIDTH],
                 int themeNumber, bool world[][MAX_COL]);
 void ShowShapes(sf::RenderWindow &window,
@@ -24,6 +26,7 @@ bool ButtonDetect(int mouse_x, int mouse_y, int leftTop_x, int leftTop_y,
                   int rightBottom_x, int rightBottom_y);
 void colorGenerator(int &Red, int &Green, int &Blue, int themeNumber);
 void pixelToCell(int pixel_x, int pixel_y, int &i, int &j);
+void cellToPixel(int i, int j, sf::Vector2f &pixelLoc);
 int Random(int lo, int hi);
 void swapInt(int &a, int &b, bool condition);
 

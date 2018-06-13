@@ -298,9 +298,24 @@ void animate::processEvents() {
                         state = PAUSED;
                         sideBar.setButtonState(B_NORMAL);
                     }
+                    else if(state == LOADING_PATTERN) {
+                        std::cout<<"READY TO LOAD PATTERN"<<std::endl;
+                        int mouse_i = 0;
+                        int mouse_j = 0;
+                        pixelToCell(x, y, mouse_i, mouse_j);
+                        if(!PasteSelectionFromFile(fileName, mouse_i, mouse_j, world)) {
+                            std::cout<<"paste selection failed"<<std::endl;
+                        }
+                        std::cout<<"PATTERN LOADED"<<std::endl;
+//                        state = PAUSED;
+//                        sideBar.setButtonState(B_NORMAL);
+                    }
                 }
 
-                if(ButtonDetect(x, y, 544, 30, 620, 60)) {
+                //SIDEBAR BUTTONS DETECTION: START FROM (550, 30)
+                //DISTANCE BETWEEN ITEM LT POINTS: 48.
+                //48 = 24(HEIGHT OF AN ITEM) + 24(SPACING BETWEEN ITEMS)
+                if(ButtonDetect(x, y, 550, 30, 640, 60)) {
                     //PAUSE BUTTON DETECTION
                     //                    if(!paused) {
                     if(state != PAUSED) {
@@ -315,24 +330,24 @@ void animate::processEvents() {
                         std::cout << "Resumed" << std::endl;
                     }
                 }
-                if(ButtonDetect(x, y, 544, 90, 640, 120)) {
+                if(ButtonDetect(x, y, 550, 78, 640, 108)) {
                     //RANDOM BUTTON DETECTION
                     std::cout << "Randomizing" << std::endl;
                     initial_random(world, 50);
                     //                    DrawText(textButton, font, sf::Color::Yellow, "Random", 550, 150, window);
                 }
-                if(ButtonDetect(x, y, 544, 150, 605, 180)) {
+                if(ButtonDetect(x, y, 550, 126, 640, 156)) {
                     //CLEAR BUTTON DETECTION
                     std::cout << "clearing" << std::endl;
                     initialize_2d(world);
 
                 }
-                if(ButtonDetect(x, y, 544, 210, 600, 240)) {
+                if(ButtonDetect(x, y, 500, 174, 640, 204)) {
                     //EXIT BUTTON DETECTION
                     std::cout << "exiting" << std::endl;
                     window.close();
                 }
-                if(ButtonDetect(x, y, 544, 270, 600, 300)) {
+                if(ButtonDetect(x, y, 550, 222, 640, 252)) {
                     //SELECT BUTTON DETECTION
 
                     //1. set the flag to true/false
@@ -352,47 +367,102 @@ void animate::processEvents() {
                     //2. get the mouse position & convert it to i, j...
                     //go to grid mouse event detection part
                 }
+                if(ButtonDetect(x, y, 550, 270, 640, 300)) {
+                    if(state != LOADING_PATTERN){
+                        state = LOADING_PATTERN;
+                        sideBar.setButtonState(B_LOADING_PATTERN);
+                    } else {
+                        state = PAUSED;
+                        sideBar.setButtonState(B_NORMAL);
+                    }
+                }
 
+                if(ButtonDetect(x, y, 750, 70, 850, 100)) {
+                    //BLUE
+
+                }
+                if(ButtonDetect(x, y, 750, 110, 850, 140)) {
+                    //MINT
+
+                }
+                if(ButtonDetect(x, y, 750, 150, 850, 180)) {
+                    //PURPLE
+
+                }
+                if(ButtonDetect(x, y, 750, 190, 850, 220)) {
+                    //MAGENTA
+                }
+                if(ButtonDetect(x, y, 750, 230, 850, 260)) {
+                    //PRIDE
+                }
                 //FOR SAVE TO SLOTS:
-                int num = 0;
-                for(int row = 0; row < 3; row++) {
-                    for(int col = 0; col < 3; col++) {
-                        num++;
-                        int vectorX= 550 + col*(42);
-                        int vectorY= 390 + row*(42);
-                        if(ButtonDetect(x, y, vectorX, vectorY,
-                                        vectorX + 42, vectorY + 42)) {
-                            std::cout << "saving to " << num << std::endl;
-                            std::string fileName = "\0";
-                            fileName = std::to_string(num);
-                            fileName += ".txt";
-                            if(!write2dBoolArray(fileName, world))
-                                std::cout << "save failed" << std::endl;
+                if(ButtonDetect(x, y, 550, 390, 676, 516)) {
+                    //IF PRESSED INSIDE FIRST NUMBER BOX
+                    int num = 0;
+                    for(int row = 0; row < 3; row++) {
+                        for(int col = 0; col < 3; col++) {
+                            num++;
+                            int vectorX= 550 + col*(42);
+                            int vectorY= 390 + row*(42);
+                            if(ButtonDetect(x, y, vectorX, vectorY,
+                                            vectorX + 42, vectorY + 42)) {
+                                if(state == PASTING) {
+                                    std::cout << "saving patterns to " << num << std::endl;
+                                    fileName = "Pattern_";
+                                    fileName += std::to_string(num);
+                                    fileName += ".txt";
+                                    if(!SaveSelectionToFile(fileName, select_LT, select_RB, world)) {
+                                        std::cout << "pattern save to file failed" << std::endl;
+                                    }
+                                    state = PAUSED;
+                                    sideBar.setButtonState(B_NORMAL);
+                                }
+                                else {
+                                    std::cout << "saving to " << num << std::endl;
+                                    fileName = std::to_string(num);
+                                    fileName += ".txt";
+                                    if(!write2dBoolArray(fileName, world))
+                                        std::cout << "save failed" << std::endl;
+                                }
+                            }
                         }
                     }
                 }
 
                 //FOR LOAD FROM SLOTS:
-                num = 0;
-
-                for(int row = 0; row < 3; row++) {
-                    for(int col = 0; col < 3; col++) {
-                        num++;
-                        int vectorX= 750 + col*(42);
-                        int vectorY= 390
-                                + row*(42);
-                        if(ButtonDetect(x, y, vectorX, vectorY,
-                                        vectorX + 42, vectorY + 42)) {
-                            std::cout << "loading from " << num << std::endl;
-                            std::string fileName = "\0";
-                            fileName = std::to_string(num);
-                            fileName += ".txt";
-                            if(!read2dBoolArray(fileName, world))
-                                std::cout << "load failed" << std::endl;
+                if(ButtonDetect(x, y, 750, 390, 876, 516)) {
+                    //IF PRESSED INSIDE SECOND NUMBER BOX
+                    int num = 0;
+                    for(int row = 0; row < 3; row++) {
+                        for(int col = 0; col < 3; col++) {
+                            num++;
+                            int vectorX= 750 + col*(42);
+                            int vectorY= 390 + row*(42);
+                            if(ButtonDetect(x, y, vectorX, vectorY,
+                                            vectorX + 42, vectorY + 42)) {
+                                if (state == LOADING_PATTERN){
+                                    std::cout << "loading pattern from " << num << std::endl;
+                                    fileName = "Pattern_";
+                                    fileName += std::to_string(num);
+                                    fileName += ".txt";
+//                                    if(!PasteSelectionFromFile(fileName, select_LT, select_RB,
+//                                                               x, y, world)) {
+//                                        std::cout << "pattern load from file failed" <<std::endl;
+//                                    }
+//                                    state = PAUSED;
+//                                    sideBar.setButtonState(B_NORMAL);
+                                }
+                                else {
+                                    std::cout << "loading from " << num << std::endl;
+                                    fileName = std::to_string(num);
+                                    fileName += ".txt";
+                                    if(!read2dBoolArray(fileName, world))
+                                        std::cout << "load failed" << std::endl;
+                                }
+                            }
                         }
                     }
                 }
-
                 //FOR DRAWING ON THE GRID:
 
                 //                if(ButtonDetect(x, y, 0, 0, 520, 520)) {
@@ -429,6 +499,9 @@ void animate::render() {
     ShowShapes(window, shapeArray);
     if(state == SELECTING_MOUSE_PRESSED) {
         DrawSelection(window, select_LT, sf::Mouse::getPosition(window));
+    }
+    if(state == PASTING) {
+        DrawSelection(window, select_LT, select_RB);
     }
     sideBar.draw(window);
     window.display();

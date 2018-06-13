@@ -1,5 +1,7 @@
 #include <iostream>
+#include <fstream>
 #include "game_of_life_sfml.h"
+#include "game_of_life.h"
 
 void SaveSelection(sf::Vector2i LT, sf::Vector2i RB, bool tempArray[][MAX_COL], bool world[][MAX_COL]) {
     int LT_i = 0,
@@ -40,6 +42,86 @@ void PasteSelection(sf::Vector2i LT, sf::Vector2i RB,
             //DEBUG
         }
     }
+}
+
+bool SaveSelectionToFile(std::string fileName, sf::Vector2i LT, sf::Vector2i RB, bool world[][MAX_COL]) {
+    int LT_i = 0,
+            LT_j = 0,
+            RB_i = 0,
+            RB_j = 0;
+    pixelToCell(LT.x, LT.y, LT_i, LT_j);
+    pixelToCell(RB.x, RB.y, RB_i, RB_j);
+    swapInt(LT_i, RB_i, (LT_i > RB_i));
+    swapInt(LT_j, RB_j, (LT_j > RB_j));
+    int size_i = RB_i - LT_i + 1;
+    int size_j = RB_j - LT_j + 1;
+
+    ofstream outFile;
+    outFile.open(fileName);
+    if(outFile.fail()) {
+//        cout << "can't write to file" << endl;
+        cin.get();
+        return false;
+    }
+    for(int i = 0; i < size_i; i++) {
+        for(int j = 0; j < size_j; j++) {
+            outFile << world[LT_i + i][LT_j + j] << ' ';
+            //DEBUG
+//            std::cout<<tempArray[i][j]<<" ";
+        }
+//        std::cout<<std::endl;
+        outFile << endl;
+    }
+    outFile.close();
+    return true;
+}
+
+bool PasteSelectionFromFile(std::string fileName,
+                       int mouse_i, int mouse_j, bool world[][MAX_COL]) {
+    ifstream is(fileName);      //open file
+
+    char c;
+    int j = 0;
+    int i = 0;
+    while (is.get(c))  {
+        if(c == '\n') {
+            //cout<<" |"<<endl;
+            j = 0;
+            i++;
+        }
+        else if(c == ' ') {
+            //cout<<"-";
+        } else {
+            //cout<<c;
+            int c_int = c - 48;
+            if((mouse_i + i <= GRID_HEIGHT)
+                    && (mouse_j + j <= GRID_WIDTH))
+                world[mouse_i + i][mouse_j + j] = c_int;
+            j++;
+        }
+    }
+
+//    for(int i = 0; ; i++) {
+//        for(int j = 0; ; j++) {
+//            if(input == '\n') {
+////                std::cout << "line returned" << std::endl;
+//                break;
+//            } else if(input == ' ') {
+//                std::cout << "space, skipped" << std::endl;
+//            } else {
+//                int inputInt = input - 48;
+//                world[mouse_i + i][mouse_j + j] = inputInt;
+//                std::cout << "cell registered" << std::endl;
+//            }
+//            if(inFile.eof()){
+//                break;
+//                std::cout<<"EOF reached"<<std::endl;
+//            }
+//        }
+//    }
+    fill_margin(world);
+    is.close();
+    return true;
 }
 
 void FillShapes(sf::RectangleShape shapeArray[][GRID_WIDTH],
@@ -137,13 +219,26 @@ void DrawSelection(sf::RenderWindow &window, sf::Vector2i LT, sf::Vector2i mouse
 //    vector2f size(RB.x - LT.x, RB.y - LT.y);
 //    int width = RB.x - LT.x;
 //    int height = RB.y - LT.y;
-    rec.setSize(sf::Vector2f(mouseLoc.x - LT.x, mouseLoc.y - LT.y));
+    sf::Vector2i LT_ij;
+    sf::Vector2i mouseLoc_ij;
+    sf::Vector2f LT_aligned;
+    sf::Vector2f mouseLoc_aligned;
+    pixelToCell(LT.x, LT.y, LT_ij.x, LT_ij.y);
+    LT_ij.x --;
+    LT_ij.y --;
+    pixelToCell(mouseLoc.x, mouseLoc.y, mouseLoc_ij.x, mouseLoc_ij.y);
+    cellToPixel(LT_ij.x, LT_ij.y, LT_aligned);
+    cellToPixel(mouseLoc_ij.x, mouseLoc_ij.y, mouseLoc_aligned);
+    rec.setSize(sf::Vector2f(mouseLoc_aligned.x - LT_aligned.x,
+                             mouseLoc_aligned.y - LT_aligned.y));
     rec.setFillColor(sf::Color(255, 199, 0, 70));  //50 = alpha = transparency
-    rec.setPosition(LT.x, LT.y);
+    rec.setOutlineColor(sf::Color(255, 199, 0, 200));
+    rec.setOutlineThickness(1);
+    rec.setPosition(LT_aligned.x, LT_aligned.y);
     window.draw(rec);
 }
 
-bool ButtonDetect(int mouse_x, int mouse_y, int leftTop_x, int leftTop_y,
+bool   ButtonDetect(int mouse_x, int mouse_y, int leftTop_x, int leftTop_y,
                   int rightBottom_x, int rightBottom_y) {
     return ((mouse_x >= leftTop_x && mouse_y >= leftTop_y)
         && (mouse_x <= rightBottom_x && mouse_y <= rightBottom_y));
@@ -222,6 +317,11 @@ void colorGenerator(int &Red, int &Green, int &Blue, int themeNumber) {
 void pixelToCell(int pixel_x, int pixel_y, int &i, int &j) {
     i = pixel_y / (CELL_SIZE + 1) + 1;
     j = pixel_x / (CELL_SIZE + 1) + 1;
+}
+
+void cellToPixel(int i, int j, sf::Vector2f &pixelLoc) {
+    pixelLoc.x = j * (CELL_SIZE + 1);
+    pixelLoc.y = i * (CELL_SIZE + 1);
 }
 
 int Random(int lo, int hi){
