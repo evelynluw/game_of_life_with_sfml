@@ -11,6 +11,8 @@
 
 animate::animate()
 {
+    //CTOR AND CREATES THE WINDOW, INITIALIZE ARRAYS
+
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Game of Life");
     window.setFramerateLimit(frameRate);
     window.setVerticalSyncEnabled(true);
@@ -23,6 +25,7 @@ animate::animate()
 }
 
 void animate::run() {
+    //RUN THE GAME
     while (window.isOpen()) {
       processEvents();
       update();
@@ -32,7 +35,8 @@ void animate::run() {
 }
 
 void animate::processEvents() {
-    // check all the window's events that were triggered since the last iteration of the loop
+    //HANDLE EVENTS, E.G. MOUSE CLICKS, KEY PRESSINGS.
+    //CHECKED DURING EVERY ITERATION OF THE WHILE LOOP IN RUN
 
     sf::Event event;
 
@@ -342,12 +346,7 @@ void animate::processEvents() {
                     initialize_2d(world);
 
                 }
-                if(ButtonDetect(x, y, 500, 174, 640, 204)) {
-                    //EXIT BUTTON DETECTION
-                    std::cout << "exiting" << std::endl;
-                    window.close();
-                }
-                if(ButtonDetect(x, y, 550, 222, 640, 252)) {
+                if(ButtonDetect(x, y, 550, 174, 640, 204)) {
                     //SELECT BUTTON DETECTION
 
                     //1. set the flag to true/false
@@ -367,7 +366,9 @@ void animate::processEvents() {
                     //2. get the mouse position & convert it to i, j...
                     //go to grid mouse event detection part
                 }
-                if(ButtonDetect(x, y, 550, 270, 640, 300)) {
+                if(ButtonDetect(x, y, 550, 222, 660, 252)) {
+//                    if(ButtonDetect(x, y, 550, 270, 640, 300)) {
+                    //LOAD PATTERNS BUTTON DETECTION
                     if(state != LOADING_PATTERN){
                         state = LOADING_PATTERN;
                         sideBar.setButtonState(B_LOADING_PATTERN);
@@ -376,25 +377,47 @@ void animate::processEvents() {
                         sideBar.setButtonState(B_NORMAL);
                     }
                 }
+                if(ButtonDetect(x, y, 550, 270, 640, 300)) {
+                    //EXIT BUTTON DETECTION
+                    std::cout << "exiting" << std::endl;
+                    window.close();
+                }
 
-                if(ButtonDetect(x, y, 750, 70, 850, 100)) {
-                    //BLUE
+                //COLOR SETTINGS
+                {
+                    if(ButtonDetect(x, y, 750, 70, 850, 100)) {
+                        //BLUE
+                        themeNumber = 1;
+                        std::cout<<"color: blue"<<std::endl;
 
+                    }
+                    if(ButtonDetect(x, y, 750, 110, 850, 140)) {
+                        //MINT
+                        themeNumber = 2;
+                        std::cout<<"color: mint"<<std::endl;
+                    }
+                    if(ButtonDetect(x, y, 750, 150, 850, 180)) {
+                        //PURPLE
+                        themeNumber = 3;
+                        std::cout<<"color: purple"<<std::endl;
+                    }
+                    if(ButtonDetect(x, y, 750, 190, 850, 220)) {
+                        //MAGENTA
+                        themeNumber = 4;
+                        std::cout<<"color: magenta"<<std::endl;
+                    }
+                    if(ButtonDetect(x, y, 750, 230, 850, 260)) {
+                        //PRIDE
+                        themeNumber = 5;
+                        std::cout<<"color: pride"<<std::endl;
+                    }
+                    if(ButtonDetect(x, y, 750, 270, 850, 300)) {
+                        //PRIDE
+                        themeNumber = 0;
+                        std::cout<<"color: random"<<std::endl;
+                    }
                 }
-                if(ButtonDetect(x, y, 750, 110, 850, 140)) {
-                    //MINT
 
-                }
-                if(ButtonDetect(x, y, 750, 150, 850, 180)) {
-                    //PURPLE
-
-                }
-                if(ButtonDetect(x, y, 750, 190, 850, 220)) {
-                    //MAGENTA
-                }
-                if(ButtonDetect(x, y, 750, 230, 850, 260)) {
-                    //PRIDE
-                }
                 //FOR SAVE TO SLOTS:
                 if(ButtonDetect(x, y, 550, 390, 676, 516)) {
                     //IF PRESSED INSIDE FIRST NUMBER BOX
@@ -487,6 +510,7 @@ void animate::processEvents() {
 }
 
 void animate::update() {
+    //CHANGE THE STATE OF THE GAME
     if(state == NORMAL) {
         //IF THE GAME IS NOT PAUSED...
         step(world);
@@ -494,6 +518,7 @@ void animate::update() {
 }
 
 void animate::render() {
+    //RENDER THE GAME: CLEAR, DRAW, DISPLAY
     window.clear();
     FillShapes(shapeArray, themeNumber, world);
     ShowShapes(window, shapeArray);
@@ -505,10 +530,6 @@ void animate::render() {
     }
     sideBar.draw(window);
     window.display();
-
-}
-
-void animate::Draw() {
 
 }
 

@@ -12,17 +12,17 @@ using namespace std;
 class sidebar
 {
 public:
-    sidebar();
-    void draw(sf::RenderWindow& window);
-    void drawMenu(sf::RenderWindow &window);
-    void drawItem(sf::RenderWindow &window, bool entered);
+    sidebar();  //CTOR
+    void draw(sf::RenderWindow& window);        //draw the sidebar
+//    void drawMenu(sf::RenderWindow &window);
+//    void drawItem(sf::RenderWindow &window, bool entered);
     void drawText(sf::Color color, std::string textString,
-                  int pos_x, int pos_y, sf::RenderWindow &window, bool rainbow = false);
+                  int pos_x, int pos_y, sf::RenderWindow &window);
+        //draw text with these identities
     void drawNumberBox(sf::RenderWindow &window, int leftTop_x, int leftTop_y);
-    void setMousePos(float mouse_x, float mouse_y);
+        //draw number box for saving / loading
     void setButtonState(BUTTON_STATE buttonState);
-    string& operator [](int index);
-
+        //set the button state to buttonState
     const float _button_width = 70;
     const float _button_height = 24;
     const float _button_spacing = 36;
@@ -39,7 +39,7 @@ private:
     float _mouse_x;
     float _mouse_y;
     sf::Vector2f _mouseLoc;
-    BUTTON_STATE _buttonState;
+    BUTTON_STATE _buttonState = B_NORMAL;
 //    string itemStringList[] =
 //        {"Resume",
 //        "Random",

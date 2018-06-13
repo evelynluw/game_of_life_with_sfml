@@ -30,4 +30,5 @@ HEADERS += \
     animate.h
 
 DISTFILES += \
-    notes.txt
+    notes.txt \
+    test.md

@@ -4,6 +4,11 @@
 #include "game_of_life.h"
 
 void SaveSelection(sf::Vector2i LT, sf::Vector2i RB, bool tempArray[][MAX_COL], bool world[][MAX_COL]) {
+    /* SAVE SELECTION TO TEMPARRAY.
+     * LT: leftTop position, in pixels;
+     * RB: RightBottom position, in pixels.
+     * tempArray: an array for saving the small area, like a clipboard
+     */
     int LT_i = 0,
             LT_j = 0,
             RB_i = 0,
@@ -26,6 +31,13 @@ void SaveSelection(sf::Vector2i LT, sf::Vector2i RB, bool tempArray[][MAX_COL], 
 
 void PasteSelection(sf::Vector2i LT, sf::Vector2i RB,
                     int mouse_i, int mouse_j, bool tempArray[][MAX_COL], bool world[][MAX_COL]) {
+    /* PASTE SELECTION FROM TEMPARRAY.
+     * LT: leftTop position, in pixels;
+     * RB: RightBottom position, in pixels.
+     * mouse_i & mouse_j: the location of the mouse, in "i and j" -- the coordinates inside of
+     *     the world array
+     * tempArray: an array for saving the small area, like a clipboard
+     */
     int LT_i = 0,
             LT_j = 0,
             RB_i = 0,
@@ -45,6 +57,13 @@ void PasteSelection(sf::Vector2i LT, sf::Vector2i RB,
 }
 
 bool SaveSelectionToFile(std::string fileName, sf::Vector2i LT, sf::Vector2i RB, bool world[][MAX_COL]) {
+    /* SAVE SELECTION TO FILE. FILE IS TXT. SELECTION IS SAVED BY SEPARATING EVERY
+     * CELL WITH ' ', AND RETURN AFTER EVERY LINE ENDINGS
+     * fileName: the name of the file to be saved, includes ".txt"
+     * LT: leftTop position, in pixels;
+     * RB: RightBottom position, in pixels.
+     * tempArray: an array for saving the small area, like a clipboard
+     */
     int LT_i = 0,
             LT_j = 0,
             RB_i = 0,
@@ -78,6 +97,12 @@ bool SaveSelectionToFile(std::string fileName, sf::Vector2i LT, sf::Vector2i RB,
 
 bool PasteSelectionFromFile(std::string fileName,
                        int mouse_i, int mouse_j, bool world[][MAX_COL]) {
+    /* PASTE SELECTION FROM FILE.
+     * fileName: the name of the file, includes ".txt"
+     * mouse_i & mouse_j: the location of the mouse, in "i and j" -- the coordinates inside of
+     *     the world array, so they are integers
+     * tempArray: an array for saving the small area, like a clipboard
+     */
     ifstream is(fileName);      //open file
 
     char c;
@@ -100,25 +125,6 @@ bool PasteSelectionFromFile(std::string fileName,
             j++;
         }
     }
-
-//    for(int i = 0; ; i++) {
-//        for(int j = 0; ; j++) {
-//            if(input == '\n') {
-////                std::cout << "line returned" << std::endl;
-//                break;
-//            } else if(input == ' ') {
-//                std::cout << "space, skipped" << std::endl;
-//            } else {
-//                int inputInt = input - 48;
-//                world[mouse_i + i][mouse_j + j] = inputInt;
-//                std::cout << "cell registered" << std::endl;
-//            }
-//            if(inFile.eof()){
-//                break;
-//                std::cout<<"EOF reached"<<std::endl;
-//            }
-//        }
-//    }
     fill_margin(world);
     is.close();
     return true;
@@ -126,6 +132,10 @@ bool PasteSelectionFromFile(std::string fileName,
 
 void FillShapes(sf::RectangleShape shapeArray[][GRID_WIDTH],
                 int themeNumber, bool world[][MAX_COL]){
+    /* SET THE IDENDITIES OF THE SMALL SQUARES INSIDE OF THE GRID.
+     * shapeArray: the array consist of all the small RectangleShapes
+     * themeNumber: the number for the color theme
+     */
     int Red = 0, Green = 0, Blue = 0;
     for (int row=0; row<GRID_HEIGHT; row++){
         for (int col=0; col<GRID_WIDTH; col++){
@@ -150,6 +160,10 @@ void FillShapes(sf::RectangleShape shapeArray[][GRID_WIDTH],
 
 void ShowShapes(sf::RenderWindow& window,
                 sf::RectangleShape shapeArray[][GRID_WIDTH] ){
+    /* DISPLAY THE SHAPES TO THE WINDOW
+     * window: the main window in the program
+     * shapeArray: the grid made of many small RectangleShapes
+     */
     for (int row=0; row<GRID_HEIGHT; row++){
         for (int col=0; col<GRID_WIDTH; col++){
             window.draw(shapeArray[row][col]);
@@ -157,50 +171,18 @@ void ShowShapes(sf::RenderWindow& window,
     }
 
 }
-
-void ClearShapes(sf::RectangleShape shapeArray[][GRID_WIDTH],
-                 sf::RenderWindow &window) {
-    for (int row=0; row<GRID_HEIGHT; row++){
-        for (int col=0; col<GRID_WIDTH; col++){
-            //CHANGE THE GRID TO BLACK
-            shapeArray[row][col].setOutlineColor(sf::Color(0,0,0));
-            //CHANGE THE SHAPE TO BLACK                         //if DEAD
-            shapeArray[row][col].setFillColor(sf::Color(0,0,0));
-            window.draw(shapeArray[row][col]);
-        }
-    }
-}
-
-//void DrawNumberBox(sf::RenderWindow &window, int leftTop_x, int leftTop_y, sf::Font font) {
-//    sf::RectangleShape rec;
-//    rec.setSize(sf::Vector2f(40, 40));
-//    rec.setFillColor(sf::Color::Black);
-////    rec.setFillColor(sf::Color::White);
-//    rec.setOutlineThickness(2);
-//    rec.setOutlineColor(sf::Color(100, 100, 100));
-////    rec.setPosition(sf::Vector2f(550, 350));
-////    window.draw(rec);
-
-//    sf::Text text;
-//    int num = 0;
-//    std::string numString = "0";
-
-//    for(int row = 0; row < 3; row++) {
-//        for(int col = 0; col < 3; col++) {
-//            num++;
-//            int vectorX= leftTop_x + col*(42);
-//            int vectorY= leftTop_y + row*(42);
-//            rec.setPosition(sf::Vector2f(vectorX, vectorY));
-//            window.draw(rec);
-//            numString = std::to_string(num);
-//            DrawText(text, font, sf::Color::White, numString, vectorX + 30, vectorY+5, window);
-//        }
-//    }
-//}
 
 void DrawText(sf::Text &text, sf::Font font, sf::Color color,
               std::string textString, int pos_x, int pos_y,
               sf::RenderWindow &window) {
+    /* DRAW THE TEXT OBJECT ONTO THE WINDOW WITH THESE IDENTITIES.
+     * text: text object file.
+     * font: font file.
+     * color: sf::Color, with different ways to express
+     * textString: the textString content to be displayed.
+     * pos_x and pos_y: the location on the window that the text object should be drawn.
+     * window: the window object.
+     */
     text.setFont(font);
     text.setString(textString);
     text.setCharacterSize(24);
@@ -215,6 +197,12 @@ void DrawText(sf::Text &text, sf::Font font, sf::Color color,
 }
 
 void DrawSelection(sf::RenderWindow &window, sf::Vector2i LT, sf::Vector2i mouseLoc) {
+    /* DRAW THE SELECTION RECTANGLE WHICH STARTS FROM LT AND ENDS AT MOUSELOC.
+     * MOUSELOC IS LIVE UPDATED, BUT IS GENERATED OUTSIDE THIS FUNCTION.
+     * window: the object window
+     * LT: the leftTop position in pixels,
+     * mouseLoc: the mouse location in pixels
+     */
     sf::RectangleShape rec;
 //    vector2f size(RB.x - LT.x, RB.y - LT.y);
 //    int width = RB.x - LT.x;
@@ -238,8 +226,12 @@ void DrawSelection(sf::RenderWindow &window, sf::Vector2i LT, sf::Vector2i mouse
     window.draw(rec);
 }
 
-bool   ButtonDetect(int mouse_x, int mouse_y, int leftTop_x, int leftTop_y,
+bool ButtonDetect(int mouse_x, int mouse_y, int leftTop_x, int leftTop_y,
                   int rightBottom_x, int rightBottom_y) {
+    /* RETURNS TRUE IF MOUSE LOCATION IS INSIDE OF THE RECTANGLE
+     * mouse_x, mouse_y: location of the mouse of
+     * leftTop_x, leftTop_y: lo
+     */
     return ((mouse_x >= leftTop_x && mouse_y >= leftTop_y)
         && (mouse_x <= rightBottom_x && mouse_y <= rightBottom_y));
 }
